@@ -52,10 +52,10 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:9.8.0'
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.4.1'
-    //
+    // 依赖注入　8.4 需要两个包
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
-    //
+    // 引入 greenDao　用于操作sqlite
     compile 'org.greenrobot:greendao:3.2.0'
     compile'org.greenrobot:greendao-generator:3.0.0'
 }
