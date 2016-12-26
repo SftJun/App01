@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
     protected ProgressDialog progressDialog;
 
     protected static final int REQUEST_ACTION_TAKE_A_PICTURE = 2;
-    protected static final int REQUEST_ACTION_PICK = 1;
+    protected static final int REQUEST_ACTION_PICK_NORMAL = 1;
+    protected static final int REQUEST_ACTION_PICK_KITKAT = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,8 +99,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent localIntent = new Intent(
                         Intent.ACTION_GET_CONTENT);
+                localIntent.addCategory(Intent.CATEGORY_OPENABLE);
                 localIntent.setType("image/*");
-                startActivityForResult(localIntent, REQUEST_ACTION_PICK);
+                //从最近文档中选择的图片是个缓存，里面并没有图片的真实路径，因此在从图库选择图片的时候要分别进行处理
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                    startActivityForResult(localIntent, REQUEST_ACTION_PICK_KITKAT);
+                } else {
+                    startActivityForResult(localIntent, REQUEST_ACTION_PICK_NORMAL);
+                }
             }
         });
         btn3.setOnClickListener(new View.OnClickListener() {
@@ -238,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                     //最后根据索引值获取图片路径
                     imgPath = cursor.getString(column_index);
                     break;
-                case REQUEST_ACTION_PICK:
+                case REQUEST_ACTION_PICK_NORMAL:
                     if (data != null) {
                         Uri uri = data.getData();
                         Log.e("uri", uri.toString());
@@ -260,6 +267,11 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         //TODO
                     }
+                    break;
+                case REQUEST_ACTION_PICK_KITKAT:
+                    imgPath = HandelImgUrlOverKITKAT.getPath(this, data.getData());
+                    System.out.println("执行到这儿。。。。。");
+                    imageView.setImageURI(Uri.parse(imgPath));
                     break;
             }
             System.out.println("图片的地址是:" + imgPath);
